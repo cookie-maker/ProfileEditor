@@ -74,6 +74,7 @@
             box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
             padding: 1.2em 2em;
             max-width: 900px;
+            flex-wrap: wrap;
         }
 
         #controls input[type="text"] {
@@ -114,6 +115,7 @@
             cursor: pointer;
             box-shadow: 0 1px 6px rgba(75, 120, 255, 0.08);
             transition: background 0.2s, box-shadow 0.2s;
+            max-width: 100%;
         }
 
         #controls button:hover {
@@ -129,9 +131,42 @@
             border-radius: 1em;
             box-shadow: 0 2px 16px rgba(0, 0, 0, 0.10);
             max-width: 100vw;
+            /* width: 100%; */
             height: auto;
             max-height: 80vh;
-            width: auto;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 600px) {
+            #accordion {
+                max-width: 95vw;
+                padding: 0.5em 0.5em 1em 0.5em;
+            }
+
+            #controls {
+                flex-direction: column;
+                align-items: stretch;
+                max-width: 90vw;
+                padding: 1em 0.5em;
+                gap: 0.7em;
+            }
+
+            #controls input[type="text"],
+            #controls input[type="number"] {
+                width: 100%;
+                font-size: 1em;
+                max-width: 92%;
+            }
+
+            .accordion-btn {
+                font-size: 1em;
+                padding: 0.5em 0.7em;
+            }
+
+            .file-btn {
+                font-size: 1em;
+                padding: 0.5em 1em;
+            }
         }
 
         .file-btn {
@@ -167,6 +202,7 @@
             transition: background 0.2s, box-shadow 0.2s;
             margin-right: 0.5em;
             display: inline-block;
+            max-width: 100%;
         }
 
         #imageInputLabel.file-btn:hover {
@@ -197,7 +233,6 @@
         <button id="saveBtn">保存</button>
     </div>
     <canvas id="canvas" width="1181" height="1748"></canvas>
-    <script src="main.js"></script>
     <script>
         document.getElementById('accordionBtn').addEventListener('click', function () {
             const content = document.getElementById('accordionContent');
@@ -287,10 +322,6 @@
                 }
             }
         }
-
-
-
-
 
     </script>
 </body>
