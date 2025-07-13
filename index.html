@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>プロフィールエディタ</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Hiragino Sans', 'Meiryo', sans-serif;
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #accordion {
+            margin: 2em auto;
+            max-width: 900px;
+            background: #fffbe7;
+            border-radius: 1em;
+            box-shadow: 0 2px 12px rgba(255, 200, 80, 0.08);
+            padding: 0.5em 2em 1em 2em;
+        }
+
+        .accordion-btn {
+            background: linear-gradient(90deg, #ffd966 0%, #ffe699 100%);
+            color: #7a5c00;
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.5em 1.2em;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 0.7em;
+            box-shadow: 0 1px 6px rgba(255, 200, 80, 0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+            width: 100%;
+            text-align: left;
+            outline: none;
+            position: relative;
+        }
+
+        .accordion-btn::after {
+            content: '▼';
+            font-size: 0.8em;
+            position: absolute;
+            right: 1em;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.2s;
+        }
+
+        .accordion-btn.active::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .accordion-content {
+            font-size: 1.05em;
+            color: #6b5c2e;
+            padding: 0.5em 0 0.5em 0.5em;
+            border-left: 4px solid #ffe699;
+            background: #fffde7;
+            border-radius: 0.5em;
+            display: none;
+        }
+
+        #controls {
+            margin: 1.5em auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1em;
+            background: #fff;
+            border-radius: 1em;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            padding: 1.2em 2em;
+            max-width: 900px;
+        }
+
+        #controls input[type="text"] {
+            font-size: 1.1em;
+            padding: 0.5em 0.8em;
+            border: 1px solid #bfc7d1;
+            border-radius: 0.5em;
+            outline: none;
+            width: 260px;
+            transition: border 0.2s;
+        }
+
+        #controls input[type="text"]:focus {
+            border: 1.5px solid #6b8cff;
+        }
+
+        #controls input[type="number"] {
+            font-size: 1.1em;
+            padding: 0.4em 0.5em;
+            border: 1px solid #bfc7d1;
+            border-radius: 0.5em;
+            width: 70px;
+        }
+
+        #controls label {
+            font-size: 1.05em;
+            color: #555;
+        }
+
+        #controls button {
+            background: linear-gradient(90deg, #6b8cff 0%, #4f9cff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.6em 1.5em;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 1px 6px rgba(75, 120, 255, 0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        #controls button:hover {
+            background: linear-gradient(90deg, #4f9cff 0%, #6b8cff 100%);
+            box-shadow: 0 2px 12px rgba(75, 120, 255, 0.13);
+        }
+
+        #canvas {
+            border: 1.5px solid #bfc7d1;
+            display: block;
+            margin: 0 auto 2em auto;
+            background: #fff;
+            border-radius: 1em;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.10);
+            max-width: 100vw;
+            height: auto;
+            max-height: 80vh;
+            width: auto;
+        }
+
+        .file-btn {
+            display: inline-block;
+            padding: 0.6em 1.2em;
+            background: linear-gradient(90deg, #6b8cff 0%, #4f9cff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 0.5em;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 1px 6px rgba(75, 120, 255, 0.08);
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .file-btn:hover {
+            background: linear-gradient(90deg, #4f9cff 0%, #6b8cff 100%);
+            box-shadow: 0 2px 12px rgba(75, 120, 255, 0.13);
+        }
+
+        #imageInputLabel.file-btn {
+            background: linear-gradient(90deg, #479dff 0%, #a9f8ff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 0.5em;
+            padding: 0.6em 1.5em;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 1px 6px rgba(255, 180, 70, 0.10);
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-right: 0.5em;
+            display: inline-block;
+        }
+
+        #imageInputLabel.file-btn:hover {
+            background: linear-gradient(90deg, #ffcc33 0%, #ffb347 100%);
+            box-shadow: 0 2px 12px rgba(255, 180, 70, 0.18);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="accordion" class="accordion">
+        <button id="accordionBtn" class="accordion-btn">説明を表示</button>
+        <div id="accordionContent" class="accordion-content" style="display:none;">
+            <ol>
+                <li>「プロフィールを選択」ボタンでプロフィールのファイルの選択してください。</li>
+                <li>「専攻を入力」欄にテキストを入力すると画像上に表示されます。</li>
+                <li>フォントサイズを調整できます。</li>
+                <li>「保存」ボタンで合成画像をダウンロードできます。</li>
+            </ol>
+        </div>
+    </div>
+    <div id="controls">
+        <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        <label for="imageInput" id="imageInputLabel" class="file-btn">プロフィールを選択</label>
+        <input type="text" id="textInput" placeholder="専攻を入力">
+        <label for="fontSizeInput">フォントサイズ:</label>
+        <input type="number" id="fontSizeInput" value="80" min="10" max="200" style="width:60px;">
+        <button id="saveBtn">保存</button>
+    </div>
+    <canvas id="canvas" width="1181" height="1748"></canvas>
+    <script src="main.js"></script>
+    <script>
+        document.getElementById('accordionBtn').addEventListener('click', function () {
+            const content = document.getElementById('accordionContent');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                this.textContent = '説明を非表示';
+            } else {
+                content.style.display = 'none';
+                this.textContent = '説明を表示';
+            }
+        });
+
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const imageInput = document.getElementById('imageInput');
+        const textInput = document.getElementById('textInput');
+        const fontSizeInput = document.getElementById('fontSizeInput');
+        const saveBtn = document.getElementById('saveBtn');
+
+        let bgImage = null;
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                const img = new Image();
+                img.onload = function () {
+                    bgImage = img;
+                    drawCanvas();
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        textInput.addEventListener('input', drawCanvas);
+        fontSizeInput.addEventListener('input', drawCanvas);
+
+        saveBtn.addEventListener('click', () => {
+            if (!bgImage) return;
+            const link = document.createElement('a');
+            link.download = 'output.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (bgImage) {
+                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+            }
+
+            const text = textInput.value;
+            const fontSize = parseInt(fontSizeInput.value, 10) || 48;
+            ctx.font = fontSize + 'px sans-serif';
+            ctx.fillStyle = 'black';
+            ctx.globalAlpha = 0.4; // 透明度を0.5に設定（0.0〜1.0で調整可能）
+            ctx.fillText("専攻", 100, 1320);
+            ctx.globalAlpha = 1.0; // 透明度を元に戻す
+            if (text) {
+                ctx.fillStyle = 'black';
+                const maxWidth = 800; // 右限
+                const x = 300;
+                const yCenter = 1320; // 表示エリアの中央y座標
+                const lineHeight = fontSize * 1.25;
+                // テキストを右限で自動折り返し
+                const words = text.split('');
+                let lines = [];
+                let currentLine = '';
+                for (let i = 0; i < words.length; i++) {
+                    let testLine = currentLine + words[i];
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth && currentLine !== '') {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+                if (currentLine) lines.push(currentLine);
+                const totalHeight = lineHeight * lines.length;
+                let y = yCenter - totalHeight / 2 + lineHeight / 2; // 中央揃え
+                for (let i = 0; i < lines.length; i++) {
+                    ctx.fillText(lines[i], x, y + i * lineHeight);
+                }
+            }
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
